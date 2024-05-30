@@ -131,11 +131,11 @@ namespace IngameDebugConsole
         static DebugLogConsole()
         {
             AddCommand( "sysinfo", "Prints system information", LogSystemInfo );
-            AddCommand("close", "隐藏", () =>
-            {
-                DebugLogManager.Instance.HideLogWindow();
-                DebugLogManager.Instance.PopupEnabled = false;
-            });
+            // AddCommand("close", "隐藏", () =>
+            // {
+            //     DebugLogManager.Instance.HideLogWindow();
+            //     DebugLogManager.Instance.PopupEnabled = false;
+            // });
         }
 
         // Logs system information
@@ -148,6 +148,9 @@ namespace IngameDebugConsole
             stringBuilder.Append( "GPU: " ).Append( SystemInfo.graphicsDeviceName ).Append( " " ).Append( SystemInfo.graphicsMemorySize )
                 .Append( "MB " ).Append( SystemInfo.graphicsDeviceVersion )
                 .Append( SystemInfo.graphicsMultiThreaded ? " multi-threaded\n" : "\n" );
+            stringBuilder.AppendLine($"GC Memory: {( (float)GC.GetTotalMemory(false) / 1024 / 1024).ToString("0.00")}MB");
+            stringBuilder.AppendLine($"Screen Size: Width-{Screen.width} Height-{Screen.height}");
+            stringBuilder.AppendLine($"Time : {DateTime.Now}");
             stringBuilder.Append( "Data Path: " ).Append( Application.dataPath ).Append( "\n" );
             stringBuilder.Append( "Persistent Data Path: " ).Append( Application.persistentDataPath ).Append( "\n" );
             stringBuilder.Append( "StreamingAssets Path: " ).Append( Application.streamingAssetsPath ).Append( "\n" );
