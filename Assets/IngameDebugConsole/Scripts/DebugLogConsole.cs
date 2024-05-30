@@ -476,7 +476,7 @@ namespace IngameDebugConsole
 		
         static List<ConsoleMethodInfo> matchingMethods = new List<ConsoleMethodInfo>();
 		
-        public static void ExecuteCommand( string command )
+        public static void ExecuteCommand( string command, IEnumerable<string> args)
         {
             if( command == null )
                 return;
@@ -488,7 +488,8 @@ namespace IngameDebugConsole
 
             // Split the command's arguments
             commandArguments.Clear();
-            FetchArgumentsFromCommand( command, commandArguments );
+            commandArguments.Add(command);
+            commandArguments.AddRange(args);
 
             // Find all matching commands
             matchingMethods.Clear();

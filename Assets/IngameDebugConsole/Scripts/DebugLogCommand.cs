@@ -50,6 +50,8 @@ namespace IngameDebugConsole
                         menuBtn.gameObject.SetActive(true);
                         menu2Tog.Add(method.menu, menuBtn);
                         string menu = method.menu;
+                        if (string.IsNullOrEmpty(currentMenu))
+                            currentMenu = menu;
                         menuBtn.onValueChanged.AddListener(b=>
                         {
                             if (b)
@@ -113,7 +115,8 @@ namespace IngameDebugConsole
                 btn = Instantiate(commandBtnTemplate);
             }
             btn.Init(info);
-            btn.transform.SetParent(commandBtnContent);
+            btn.transform.SetParent(commandBtnContent, false);
+            // btn.transform.localScale = Vector3.one;
             btn.gameObject.SetActive(true);
             methodInfo2Go.Add(info, btn);
         }

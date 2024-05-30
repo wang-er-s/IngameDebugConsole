@@ -192,7 +192,7 @@ namespace IngameDebugConsole
         private DebugLogRecycledListView recycledListView;
 #pragma warning restore 0649
 
-        private bool isLogWindowVisible = true;
+        private bool isLogWindowVisible = false;
         public bool IsLogWindowVisible { get { return isLogWindowVisible; } }
 
         public bool PopupEnabled
@@ -233,7 +233,7 @@ namespace IngameDebugConsole
 
         // Logs that should be registered in Update-loop
         private DynamicCircularBuffer<QueuedDebugLogEntry> queuedLogEntries;
-        private object logEntriesLock;
+        private object logEntriesLock = new object();
         private int pendingLogToAutoExpand;
         public float fps { get; private set; }
         private float fpsTimer;
@@ -289,7 +289,27 @@ namespace IngameDebugConsole
                 }
                 tagManager.ApplyModifiedProperties();
             }
-            gameObject.layer = LayerMask.NameToLayer("SceneLocked");
+            
+            void SetLayerRecursively(GameObject obj, int newLayer)
+            {
+                if (null == obj)
+                {
+                    return;
+                }
+       
+                obj.layer = newLayer;
+       
+                foreach (Transform child in obj.transform)
+                {
+                    if (null == child)
+                    {
+                        continue;
+                    }
+                    SetLayerRecursively(child.gameObject, newLayer);
+                }
+            }
+
+            SetLayerRecursively(gameObject, LayerMask.NameToLayer("SceneLocked"));
             UnityEditor.Tools.lockedLayers |= 1 << LayerMask.NameToLayer("SceneLocked");
 #endif
 			
@@ -313,8 +333,6 @@ namespace IngameDebugConsole
             pooledLogEntries = new List<DebugLogEntry>( 16 );
             pooledLogItems = new List<DebugLogItem>( 16 );
             queuedLogEntries = new DynamicCircularBuffer<QueuedDebugLogEntry>( 16 );
-
-            logEntriesLock = new object();
 
             canvasTR = (RectTransform) transform;
             logItemsScrollRectTR = (RectTransform) logItemsScrollRect.transform;

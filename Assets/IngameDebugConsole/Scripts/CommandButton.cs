@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace IngameDebugConsole
@@ -12,7 +14,7 @@ namespace IngameDebugConsole
         private Button Btn;
 
         [SerializeField]
-        private InputField Input;
+        private InputField TemplateInput;
 
         [SerializeField]
         private Text NameTxt;
@@ -22,6 +24,7 @@ namespace IngameDebugConsole
 
         private Image btnImg;
         private string oldName;
+        private List<InputField> inputs = new List<InputField>();
 
         private void Start()
         {
@@ -30,8 +33,6 @@ namespace IngameDebugConsole
 
         public void Init(ConsoleMethodInfo consoleMethodInfo)
         {
-            Input.placeholder.GetComponent<Text>().text = "请输入参数，类型在上面，每个参数用空格分隔";
-            Input.gameObject.SetActive(consoleMethodInfo.parameterTypes.Length > 0);
             oldName = $">{consoleMethodInfo.command}({string.Join("",consoleMethodInfo.parameters)})";
             NameTxt.text = oldName;
             DescTxt.text = consoleMethodInfo.description;
@@ -41,7 +42,7 @@ namespace IngameDebugConsole
             {
                 try
                 {
-                    DebugLogConsole.ExecuteCommand($"{consoleMethodInfo.command} {Input.text}");
+                    DebugLogConsole.ExecuteCommand(consoleMethodInfo.command, inputs.Select(r=> r.text));
                 }
                 catch (Exception e)
                 {
@@ -57,6 +58,14 @@ namespace IngameDebugConsole
                     Btn.interactable = true;
                 }));
             });
+            for (var i = 0; i < consoleMethodInfo.parameters.Length; i++)
+            {
+                var desc = consoleMethodInfo.parameters[i];
+                var input = Instantiate(TemplateInput, TemplateInput.transform.parent);
+                input.gameObject.SetActive(true);
+                input.placeholder.GetComponent<Text>().text = desc;
+                inputs.Add(input);
+            }
         }
 
         IEnumerator Delay(float time, Action action)
