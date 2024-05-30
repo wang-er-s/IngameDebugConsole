@@ -13,6 +13,13 @@ public class Test : MonoBehaviour
             print(sex);
             throw new Exception("测试异常");
         });
-        
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            print(11111111111111);
+        }
     }
 }
