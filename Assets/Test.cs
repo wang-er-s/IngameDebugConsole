@@ -21,5 +21,15 @@ public class Test : MonoBehaviour
         {
             print(11111111111111);
         }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Debug.LogError(2222222);
+        }
+        
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            Debug.LogWarning(33333);
+        }
     }
 }
